@@ -1,0 +1,15 @@
+# Copy to wrangler.toml, then:
+#   npx wrangler secret put JIRA_API_TOKEN   # from id.atlassian.com/manage-profile/security/api-tokens
+#   npx wrangler secret put PROXY_KEY        # any long random string; paste the same value in the app
+#   npx wrangler deploy
+name = "ai-eval-workbench-jira-proxy"
+main = "jira-proxy.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+JIRA_SITE = "https://your-site.atlassian.net"
+JIRA_EMAIL = "you@example.com"
+JIRA_PROJECT = "VCS"
+JIRA_ISSUE_TYPE = "Bug"
+ALLOWED_ORIGIN = "https://geopap.github.io"
+SET_PRIORITY = "false"

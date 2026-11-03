@@ -1,0 +1,13 @@
+{
+  "name": "ai-eval-workbench",
+  "version": "1.0.0",
+  "description": "From AI failures to fixes, release decisions and audit-ready evidence: error analysis, failure modes in Jira, calibrated LLM judges, a release gate and an EU AI Act evidence pack.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": { "node": ">=20" }
+}

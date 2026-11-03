@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://api.anthropic.com https://*.workers.dev; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>AI Eval Workbench</title>
+  <meta name="description" content="From AI failures to fixes, release decisions and audit-ready evidence: error analysis, failure modes in Jira, calibrated LLM judges, a release gate and an EU AI Act evidence pack.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css?v=1.0.0">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#view">Skip to content</a>
+  <aside class="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="8" class="brand-bg"/><path d="M9 17 L14 22 L23 10" class="brand-line"/></svg>
+      <div><b>AI Eval Workbench</b><span>Evals for product &amp; governance</span></div>
+      <button id="menu" class="menu" aria-label="Toggle navigation">☰</button>
+    </div>
+    <nav class="nav" aria-label="Main">
+      <a href="#/overview">Overview</a>
+      <div class="nav-group">The loop</div>
+      <a href="#/spec">1 · Eval spec</a>
+      <a href="#/review">2 · Review queue <span id="todo" class="cycle-status cs-awaiting-sign-off" hidden></span></a>
+      <a href="#/failures">3 · Failure modes</a>
+      <a href="#/judge">4 · Judge calibration</a>
+      <a href="#/gate">4 · Release gate</a>
+      <a href="#/evidence">5 · Evidence pack</a>
+      <div class="nav-group">Setup</div>
+      <a href="#/integrations">Integrations</a>
+      <a href="#/audit">Audit trail &amp; data</a>
+      <a href="#/about">About</a>
+      <div class="nav-group">Related</div>
+      <a href="https://geopap.github.io/ai-use-case-intake/" target="_blank" rel="noopener">AI Use-Case Intake ↗</a>
+      <a href="https://geopap.github.io/ai-portfolio-office/" target="_blank" rel="noopener">AI Portfolio Office ↗</a>
+    </nav>
+    <div class="sidebar-foot">
+      <button id="theme" class="btn ghost small" aria-label="Toggle dark mode">◐ Theme</button>
+      <p>Synthetic data · fictional company</p>
+    </div>
+  </aside>
+  <main id="view" tabindex="-1"><noscript>This demo needs JavaScript.</noscript></main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
