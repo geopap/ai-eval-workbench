@@ -1,7 +1,7 @@
 // App state, persisted per browser; every storage access is guarded.
 
 import { TRACES, FAILURE_MODES, RUNS } from './data.js';
-import { appendEntry } from './audit.js';
+import { appendEntry, verifyChain } from './audit.js';
 
 const KEY = 'aiew.state.v1';
 
@@ -33,6 +33,24 @@ export function save(state) {
 export async function log(state, actor, action, detail) {
   state.audit = await appendEntry(state.audit, { actor, action, detail });
   save(state);
+}
+
+// Full backup and restore. A restore is refused unless the shape is right and the audit chain verifies.
+const BACKUP_APP = 'ai-eval-workbench';
+
+export function toBackup(state, now = new Date()) {
+  return JSON.stringify({ app: BACKUP_APP, version: 1, exportedAt: now.toISOString(), state }, null, 2);
+}
+
+export async function restoreBackup(text) {
+  let data;
+  try { data = JSON.parse(text); } catch { throw new Error('Not a valid JSON file.'); }
+  if (data?.app !== BACKUP_APP || data.version !== 1 || !data.state || typeof data.state !== 'object') throw new Error('Not an AI Eval Workbench backup.');
+  const s = data.state;
+  for (const k of ['traces', 'fms', 'runs', 'audit']) if (!Array.isArray(s[k])) throw new Error(`Backup is missing "${k}".`);
+  const chain = await verifyChain(s.audit);
+  if (!chain.ok) throw new Error(`Audit chain is broken at entry ${chain.brokenAt}; backup rejected.`);
+  return { ...freshState(), ...s };
 }
 
 export function nextFmId(fms) {

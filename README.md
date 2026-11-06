@@ -2,7 +2,7 @@
 
 **From AI failures to fixes, release decisions and audit-ready evidence. Evals that product teams use and AI governance can trust.**
 
-[**▶ Live demo**](https://geopap.github.io/ai-eval-workbench/) · [Method](docs/METHOD.md) · [Jira proxy](worker/) · Part of a trilogy with [AI Use-Case Intake](https://github.com/geopap/ai-use-case-intake) and [AI Portfolio Office](https://github.com/geopap/ai-portfolio-office)
+[**▶ Live demo**](https://geopap.github.io/ai-eval-workbench/) · [Method](docs/METHOD.md) · [Architecture](docs/ARCHITECTURE.md) · [Jira proxy](worker/) · Part of a trilogy with [AI Use-Case Intake](https://github.com/geopap/ai-use-case-intake) and [AI Portfolio Office](https://github.com/geopap/ai-portfolio-office)
 
 ![Overview](docs/screenshots/overview.png)
 
@@ -19,6 +19,14 @@ Evaluation is the hardest part of shipping AI, and the tooling is built for engi
 - **There is no bridge to compliance.** EU AI Act Art. 15 expects declared accuracy metrics and testing across the system's life, but eval results are rarely packaged as evidence.
 
 The market is also consolidating fast: Promptfoo went to OpenAI, Humanloop to Anthropic, Galileo to Cisco and Langfuse to ClickHouse. A team's specs, labels, failure modes and release decisions shouldn't disappear with its eval vendor. So this workbench is **tool-neutral**: it sits *above* whatever eval tool engineering uses.
+
+## Who it's for
+
+| | What they get |
+|---|---|
+| **Product leaders** | An eval spec that replaces the requirements document for AI behaviour, error analysis that turns into a prioritised backlog, and a clear release decision they own |
+| **Technology leaders** | Quality gates and regression suites wired into release management, Jira integration with the token kept server-side, and a tool-neutral import, so no eval vendor lock-in. See the [architecture](docs/ARCHITECTURE.md) for the domain model, security and fallbacks |
+| **AI governance and risk** | Calibrated measurements instead of trusted-by-default AI judges, must-never criteria, named sign-off and an EU AI Act Art. 15 evidence pack |
 
 ## The loop
 
@@ -60,7 +68,7 @@ The release gate accepts results from any eval tool, such as Promptfoo, Braintru
 git clone https://github.com/geopap/ai-eval-workbench.git
 cd ai-eval-workbench
 python3 -m http.server 8080      # then open http://localhost:8080
-npm test                         # 21 tests: checks, calibration, gate, Jira, proxy, import, judge (Node 20+)
+npm test                         # 23 tests: checks, calibration, gate, Jira, proxy, import, judge, backup (Node 20+)
 ```
 
 ## Screenshots
@@ -82,6 +90,7 @@ js/jira.js        ticket builder, pre-filled create link, Jira CSV, proxy client
 js/importer.js    tool-neutral results import
 js/llm.js         live judge with Claude: strict JSON schema, untrusted-data framing
 js/audit.js       SHA-256 hash-chained audit trail
+js/store.js       browser state, full backup and verified restore
 worker/           optional Cloudflare Worker for Jira REST sync
 tests/            node:test suites, with mocked Jira and Anthropic APIs
 ```

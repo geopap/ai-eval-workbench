@@ -9,6 +9,7 @@ import { failureModeStats } from '../js/engine.js';
 import { TRACES, FAILURE_MODES, RUNS } from '../js/data.js';
 import { CRITERIA } from '../js/spec.js';
 import { appendEntry, verifyChain } from '../js/audit.js';
+import { freshState, toBackup, restoreBackup } from '../js/store.js';
 
 const fm1 = failureModeStats(TRACES, FAILURE_MODES, RUNS).find((f) => f.id === 'FM-01');
 const reply = (body, status = 200) => ({ ok: status < 300, status, json: async () => body });
@@ -122,4 +123,35 @@ test('audit chain detects tampering', async () => {
   assert.equal((await verifyChain(log)).ok, true);
   log[1].detail = 'edited';
   assert.equal((await verifyChain(log)).ok, false);
+});
+
+test('live judge retries without fallbacks when rejected, and surfaces refusals', async () => {
+  const sent = [];
+  const fetchImpl = async (u, i) => {
+    const b = JSON.parse(i.body);
+    sent.push(b);
+    if (b.fallbacks) return reply({ error: { message: 'unknown field' } }, 400);
+    return reply({ stop_reason: 'end_turn', content: [{ type: 'text', text: '{"reason":"Correct.","verdict":"pass"}' }] });
+  };
+  const c1 = CRITERIA.find((c) => c.id === 'C1');
+  const r = await judgeTrace({ apiKey: 'k', model: 'claude-opus-5-5', criterion: c1, trace: TRACES[0], fetchImpl });
+  assert.equal(r.verdict, 'pass');
+  assert.deepEqual(sent.map((b) => b.fallbacks), ['default', undefined]);
+  await assert.rejects(
+    judgeTrace({ apiKey: 'k', model: 'claude-haiku-5-5', criterion: c1, trace: TRACES[0], fetchImpl: async () => reply({ stop_reason: 'refusal', content: [] }) }),
+    /declined/,
+  );
+});
+
+test('backup round-trips and a tampered audit chain is rejected', async () => {
+  const s = freshState();
+  for (const a of ['REVIEW', 'GATE']) s.audit = await appendEntry(s.audit, { actor: 'x', action: a, detail: a });
+  const restored = await restoreBackup(toBackup(s));
+  assert.equal(restored.audit.length, 2);
+  assert.equal(restored.traces.length, s.traces.length);
+  const bad = JSON.parse(toBackup(s));
+  bad.state.audit[0].detail = 'edited';
+  await assert.rejects(restoreBackup(JSON.stringify(bad)), /chain is broken/);
+  await assert.rejects(restoreBackup('{"app":"other"}'), /Not an AI Eval Workbench backup/);
+  await assert.rejects(restoreBackup('not json'), /valid JSON/);
 });

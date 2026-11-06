@@ -1,6 +1,6 @@
 import { esc, section, pageHead, download, toast } from '../ui.js';
 import { verifyChain } from '../audit.js';
-import { freshState, save, log } from '../store.js';
+import { freshState, save, log, toBackup, restoreBackup } from '../store.js';
 
 let verdict = null;
 
@@ -19,7 +19,10 @@ export function render({ state }) {
       <tbody>${rows || '<tr><td colspan="6" class="muted">No entries yet.</td></tr>'}</tbody></table></div>`)}
     <div class="grid-2">
       ${section('Review data', `<p class="small">Export this round's human labels — the most valuable asset of any eval programme — to reuse them in another tool or the next round.</p>
-        <div class="row"><button class="btn ghost" id="export-json">Export labels (JSON)</button></div>`)}
+        <div class="row"><button class="btn ghost" id="export-json">Export labels (JSON)</button></div>
+        <p class="small">A full backup holds labels, failure modes, runs, decisions and the audit log. A restore is refused if the audit chain does not verify.</p>
+        <div class="row"><button class="btn ghost" id="backup">Download full backup</button>
+        <label class="btn ghost">Restore backup<input type="file" id="restore" accept=".json,application/json" hidden></label></div>`)}
       ${section('Reset the demo', `<p class="small">Restore the synthetic review round and clear decisions, Jira settings and the audit log stored in this browser.</p>
         <button class="btn danger" id="reset">Reset demo data</button>`)}
     </div>`;
@@ -30,6 +33,22 @@ export function bind({ root, state, refresh, replaceState }) {
   $('#verify').addEventListener('click', async () => { verdict = await verifyChain(state.audit); refresh(); });
   $('#export-log').addEventListener('click', () => download('audit-log.json', JSON.stringify(state.audit, null, 2), 'application/json'));
   $('#export-json').addEventListener('click', () => download('eval-labels.json', JSON.stringify(state.traces.filter((t) => t.review).map((t) => ({ id: t.id, user: t.user, ai: t.ai, ...t.review })), null, 2), 'application/json'));
+  $('#backup').addEventListener('click', () => download(`eval-workbench-backup-${new Date().toISOString().slice(0, 10)}.json`, toBackup(state), 'application/json'));
+  $('#restore').addEventListener('change', async (ev) => {
+    const file = ev.target.files?.[0];
+    if (!file) return;
+    try {
+      const s = await restoreBackup(await file.text());
+      verdict = null;
+      await log(s, 'user', 'BACKUP_RESTORED', `${file.name} · ${s.audit.length} audit entries verified`);
+      save(s);
+      replaceState(s);
+      toast('Backup restored.');
+    } catch (e) {
+      toast(e.message);
+    }
+    ev.target.value = '';
+  });
   $('#reset').addEventListener('click', async () => {
     if (!confirm('Reset all demo data in this browser?')) return;
     const s = freshState();
