@@ -2,7 +2,7 @@
 
 **From AI failures to fixes, release decisions and audit-ready evidence. Evals that product teams use and AI governance can trust.**
 
-[**▶ Live demo**](https://geopap.github.io/ai-eval-workbench/) · [Method](docs/METHOD.md) · [Architecture](docs/ARCHITECTURE.md) · [Jira proxy](worker/) · AI life cycle: decide with [AI Use-Case Intake](https://github.com/geopap/ai-use-case-intake) → build with [Claude Code SDLC](https://github.com/geopap/claude-code-sdlc) → **prove** → govern with [AI Portfolio Office](https://github.com/geopap/ai-portfolio-office)
+[**▶ Live demo**](https://geopap.github.io/ai-eval-workbench/) · [Method](docs/METHOD.md) · [Architecture](docs/ARCHITECTURE.md) · [Jira proxy](worker/) · AI life cycle: strategy with [Product Strategy Cockpit](https://github.com/geopap/product-strategy-cockpit) → decide with [AI Use-Case Intake](https://github.com/geopap/ai-use-case-intake) → build with [Claude Code SDLC](https://github.com/geopap/claude-code-sdlc) → **prove** → govern with [AI Portfolio Office](https://github.com/geopap/ai-portfolio-office)
 
 ![Overview](docs/screenshots/overview.png)
 
