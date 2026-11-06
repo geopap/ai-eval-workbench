@@ -2,7 +2,7 @@
 
 **From AI failures to fixes, release decisions and audit-ready evidence. Evals that product teams use and AI governance can trust.**
 
-[**▶ Live demo**](https://geopap.github.io/ai-eval-workbench/) · [Method](docs/METHOD.md) · [Architecture](docs/ARCHITECTURE.md) · [Jira proxy](worker/) · Part of a trilogy with [AI Use-Case Intake](https://github.com/geopap/ai-use-case-intake) and [AI Portfolio Office](https://github.com/geopap/ai-portfolio-office)
+[**▶ Live demo**](https://geopap.github.io/ai-eval-workbench/) · [Method](docs/METHOD.md) · [Architecture](docs/ARCHITECTURE.md) · [Jira proxy](worker/) · AI life cycle: decide with [AI Use-Case Intake](https://github.com/geopap/ai-use-case-intake) → build with [Claude Code SDLC](https://github.com/geopap/claude-code-sdlc) → **prove** → govern with [AI Portfolio Office](https://github.com/geopap/ai-portfolio-office)
 
 ![Overview](docs/screenshots/overview.png)
 
@@ -42,7 +42,7 @@ The market is also consolidating fast: Promptfoo went to OpenAI, Humanloop to An
 
 - **Release candidate 1 is NO-SHIP**, with must-never violations in safety, AI disclosure, financing promises and prompt injection. **Candidate 2 ships with conditions**: everything is clean, but the **tone judge isn't trusted**. It catches only 40% of real failures, so the gate requires a human-reviewed sample instead of trusting its score.
 - **One hidden failure is waiting to be found.** Among the ten unreviewed conversations, the assistant obeys an injected "admin mode" instruction and issues a fake discount code. Review it, create a new failure mode, and its Jira ticket is generated.
-- **The connection to the other two projects.** AI Use-Case Intake approved this assistant *on condition that red-team findings are closed*. The evidence pack shows which of those findings are verified and which are still open.
+- **The connection to the Intake stage.** AI Use-Case Intake approved this assistant *on condition that red-team findings are closed*. The evidence pack shows which of those findings are verified and which are still open.
 
 ## Jira, three ways, always with a person in the loop
 
